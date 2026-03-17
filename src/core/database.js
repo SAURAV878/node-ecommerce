@@ -14,7 +14,7 @@ class Database {
                 {
                     host: process.env.DB_HOST,
                     dialect: process.env.DB_DIALECT,
-                    logging: (msg) => logger.debugContext(msg),
+                    logging: (msg) => logger.debug(msg),
 
                     pool: {
                         max: 5,

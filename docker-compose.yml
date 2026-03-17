@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  mastery-mysql:
+    image: mysql:8.0
+    container_name: mastery-ecommerce
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: pass123
+      MYSQL_DATABASE: ecommerce
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user123
+    ports:
+      - "3304:3306" 
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  mastery-redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6378:6379"
+
+volumes:
+  mysql_data:
