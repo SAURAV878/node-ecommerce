@@ -13,7 +13,8 @@ class Database {
                 process.env.DB_PASSWORD,
                 {
                     host: process.env.DB_HOST,
-                    dialect: process.env.DB_DIALECT,
+                    port: process.env.DB_PORT,
+                    dialect: 'mysql',
                     logging: (msg) => logger.debug(msg),
 
                     pool: {
@@ -31,7 +32,7 @@ class Database {
     async connect () {
         try {
             await this.sequelize.authenticate();
-            logger.info(' connect');
+            logger.info('connect');
         } catch (error) {
             logger.error('Unable to connect', error);
             process.exit(1);

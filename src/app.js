@@ -1,5 +1,6 @@
 import express from 'express';
-import authRoutes from './routes/auth.js'
+import authRoutes from './routes/auth.js';
+import loginRoutes from './routes/login.js';
 import errorHandler from './middlewares/handle.js';
 import morgan from 'morgan';
 import logger from './utils/logger.js';
@@ -15,6 +16,7 @@ app.use(morgan('dev', {
 app.use(express.json());
 
 app.use('/', authRoutes);
+app.use('/', loginRoutes);
 
 app.use(errorHandler);
 
