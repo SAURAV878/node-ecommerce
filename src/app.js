@@ -18,6 +18,7 @@ app.use(express.json());
 app.use('/', authRoutes);
 app.use('/', loginRoutes);
 
+
 app.use(errorHandler);
 
 export default app;

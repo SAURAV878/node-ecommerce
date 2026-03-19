@@ -2,6 +2,7 @@ import User from "../models/user.js";
 import bcrypt from 'bcrypt';
 import AppError from "../utils/appError.js";
 import jwt from 'jsonwebtoken';
+import { catchAsync } from "../utils/catchAsync.js";
 
 export const signup = async (req, res, next) => {
     try {
@@ -42,7 +43,7 @@ const signToken = (id) => {
     });
 };
 
-export const login = async (req, res, next) => {
+export const login = catchAsync(async (req, res, next) => {
     const {email, password} =  req.body;
 
     if (!email || !password) {
@@ -63,6 +64,6 @@ export const login = async (req, res, next) => {
     })
 
 
-}
+});
 
 
