@@ -24,17 +24,22 @@ const Product = sequelizeInstance.sequelize.define('Product', {
     categoryId: {
         type: DataTypes.INTEGER,
         allowNull: false
-    }
-
+    },
+    indexes: [
+        {
+            uniqune: true,
+            fields: ['name', 'userId']
+        }
+    ]
 });
 
 Product.associate = (models) => {
     Product.belongsTo(models.User, {
-        foreignKey: 'userID',
+        foreignKey: 'userId',
         as: 'owner'
     });
     Product.belongsTo(models.Category, {
-        foreignKey: 'categotyId',
+        foreignKey: 'categoryId',
         as: 'category'
 
     });
