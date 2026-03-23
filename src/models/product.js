@@ -25,12 +25,6 @@ const Product = sequelizeInstance.sequelize.define('Product', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    indexes: [
-        {
-            uniqune: true,
-            fields: ['name', 'userId']
-        }
-    ]
 });
 
 Product.associate = (models) => {

@@ -2,7 +2,7 @@ import AppError from "../utils/appError.js";
 import logger from "../utils/logger.js";
 
 const errorHandler = (err, req, res, next) => {
-    if(err.name === 'TokenExpriedError') {
+    if(err.name === 'TokenExpiredError') {
         err = new AppError('Token is expired, please login again', 401);
     }
 
