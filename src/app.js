@@ -2,6 +2,7 @@ import express from 'express';
 import authRoutes from './routes/auth.js';
 import loginRoutes from './routes/login.js';
 import productRoutes from './routes/product.js';
+import categoryRoutes from './routes/category.js';
 import errorHandler from './middlewares/handle.js';
 import morgan from 'morgan';
 import logger from './utils/logger.js';
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use('/', authRoutes);
 app.use('/', loginRoutes);
 app.use('/', productRoutes);
+app.use('/', categoryRoutes);
 
 
 app.use(errorHandler);

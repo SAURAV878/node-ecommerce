@@ -1,6 +1,15 @@
+import AppError from "../utils/appError.js";
 import logger from "../utils/logger.js";
 
 const errorHandler = (err, req, res, next) => {
+    if(err.name === 'TokenExpriedError') {
+        err = new AppError('Token is expired, please login again', 401);
+    }
+
+    if(err.name === 'JsonWebTokenError') {
+        err = new AppError ('Invalid token, please login again with valid token ', 401)
+    }
+
     err.statusCode = err.statusCode || 500;
 
     logger.error ({
@@ -11,6 +20,7 @@ const errorHandler = (err, req, res, next) => {
         url: req.originalUrl
     })
 
+    
     if(process.env.NODE_ENV === 'development') {
         return res.status(err.statusCode).json({
             status: err.status,

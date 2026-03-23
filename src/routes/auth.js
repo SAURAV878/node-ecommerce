@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get('/dashboard', protect, restrictTo('admin'), (req, res) => {
     res.json({
-        message: "Welcomr Admin"
+        message: "Welcome Admin"
     });
 });
 
