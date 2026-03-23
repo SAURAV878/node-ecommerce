@@ -1,5 +1,6 @@
 import { Category } from "../models/index.js";
-import { catchAsync } from "../utils/catchAsync";
+import { catchAsync } from "../utils/catchAsync.js";
+
 
 
 export const createCategory = catchAsync(async (req , res , next) => {

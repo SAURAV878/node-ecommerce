@@ -1,5 +1,7 @@
+
 import {Product} from '../models/index.js';
 import {catchAsync} from '../utils/catchAsync.js';
+
 
 export const createProduct = catchAsync(async (req, res, next) => {
     const productData = {
