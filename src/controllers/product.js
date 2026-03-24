@@ -2,6 +2,8 @@
 import {Product} from '../models/index.js';
 import AppError from '../utils/appError.js';
 import {catchAsync} from '../utils/catchAsync.js';
+import redisClient from '../core/redis.js';
+import { clearCache } from '../utils/cacheHelper.js';
 
 
 export const getProdcut =catchAsync(async (req, res,next) => {
@@ -10,7 +12,7 @@ export const getProdcut =catchAsync(async (req, res,next) => {
     })
 
     if(!product) {
-        return next(new AppError(`No product found with id ${req.params.id}`), 404);
+        return next(new AppError(`No product found with id ${req.params.id}`, 404));
     }
     res.status(200).json ({
         staus: 'sucess',
@@ -28,6 +30,8 @@ export const createProduct = catchAsync(async (req, res, next) => {
 
     const newProduct = await Product.create(productData);
 
+    await clearCache('products_page');
+
     res.status(201).json({
         status: 'sucess',
         data : {
@@ -39,20 +43,30 @@ export const createProduct = catchAsync(async (req, res, next) => {
 export const getAllProducts = catchAsync(async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const offset = (page - 1) * limit;
+    const cacheKey = `products_page_${page}_limit_${limit}`;
+
+    const cachedData = await redisClient.get(cacheKey);
+
+    if( cachedData ) {
+        return res.status(200).json ({
+            status: 'sucess',
+            source: 'cache',
+            data: JSON.parse(cachedData)
+        });
+    }
 
     const {count, rows } = await Product.findAndCountAll({
         limit: limit,
-        offset: offset,
+        offset: (page - 1) * limit,
+        include: ['owner', 'category']
     });
+
+    await redisClient.setEx(cacheKey, 60, JSON.stringify({count, rows}));
 
     res.status(200).json({
         status: 'sucess',
-        results: rows.length,
-        totalItems: count,
-        data: {
-            products: rows
-        }
+        source: 'database',
+        data: {count, rows}
     });
 });
 
@@ -68,6 +82,8 @@ export const upadateProduct = catchAsync(async (req, res, next) => {
     }
 
     await product.update(req.body);
+
+    await clearCache('products_page');
 
     res.status(200).json({
         status: 'sucess',
@@ -89,6 +105,8 @@ export const deleteProduct = catchAsync(async (req, res, next) => {
     }
 
     await product.destroy();
+
+    await clearCache('products_page');
 
     res.status(200).json({
         staus: 'sucess',

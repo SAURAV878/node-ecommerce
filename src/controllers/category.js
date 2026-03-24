@@ -1,6 +1,8 @@
 import { Category, Product } from "../models/index.js";
 import AppError from "../utils/appError.js";
 import { catchAsync } from "../utils/catchAsync.js";
+import redisClient from "../core/redis.js";
+import { clearCache } from "../utils/cacheHelper.js";
 
 export const getCategory = catchAsync (async (req, res, next) => {
     const category = await Category.findByPk(req.params.id, {
@@ -32,6 +34,8 @@ export const createCategory = catchAsync(async (req , res , next) => {
         description
     });
 
+    await clearCache('categories');
+
     res.status(200).json({
         status: 'sucess',
         data: {
@@ -43,12 +47,24 @@ export const createCategory = catchAsync(async (req , res , next) => {
 export const getAllCategories = catchAsync(async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
-    const offset = (page -1) * limit;
+    const cacheKey = `categories_${page}_limi_${limit}`;
+
+    const cachedData = await redisClient.get(cacheKey);
+
+    if ( cachedData ) {
+        return res.status(200).json({
+            status: 'sucess',
+            data: JSON.parse(cachedData)
+        })
+    } 
+    
 
     const {count, rows} = await Category.findAndCountAll({
         limit,
-        offset
+        offset: (page - 1) * limit
     });
+
+    await redisClient.setEx(cacheKey, 60, JSON.stringify(rows));
 
     res.status(200).json({
         status: 'sucess',
@@ -69,6 +85,8 @@ export const updateCategory = catchAsync(async (req, res, next) => {
     }
 
     await category.update(req.body);
+
+    await clearCache('categories');
 
     res.status(200).json({
         status: 'sucess',
@@ -95,6 +113,8 @@ export const deleteCategory = catchAsync(async (req, res, next) => {
     }
 
     await category.destroy();
+
+    await clearCache('categories');
 
     res.status(200).json({
         status: 'sucess',
