@@ -18,10 +18,15 @@ const Cart = sequelizeInstance.sequelize.define('Carts', {
 });
 
 Cart.associate = (models) => {
-    Cart.hasone(models.User), {
-        foreginKey: 'userId',
+    Cart.belongsTo(models.User, {
+        foreignKey: 'userId',
         as: 'user'
-    }
+    });
+
+    Cart.hasMany(models.CartItem,  {
+        foreignKey: 'cartId',
+        as: 'items'
+    });
 }
 
 export default Cart;

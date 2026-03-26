@@ -10,7 +10,7 @@
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
-        autoIncrement: false
+        autoIncrement: true
       },
       cartId: {
         type: Sequelize.INTEGER,
@@ -25,7 +25,6 @@
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-
           model: 'Products',
           key: 'id'
         }
