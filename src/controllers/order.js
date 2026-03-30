@@ -61,3 +61,25 @@ export const createOrder = catchAsync(async (req , res , next) => {
         }
     });
 });
+
+
+export const getMyOrder = catchAsync(async (req, res, next) => {
+
+    const orders = await Order.findAll({
+        where : { userId: req.user.id},
+        include: [{
+            model: OrderItem,
+            as: 'items',
+            include: ['product']
+        }],
+        order: [['createdAt', 'DESC']]
+    });
+
+    res.status(200).json({
+        status: 'sucess',
+        results: orders.length,
+        data: { orders }
+    })
+});
+
+

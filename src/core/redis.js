@@ -7,7 +7,7 @@ const redisClient = createClient ({
 });
 
 redisClient.on('error', (err) => {
-    logger.error('Redis Error: ', err);
+    logger.error('Redis Error: ', err); 
 });
 
 redisClient.on('ready', () => {
