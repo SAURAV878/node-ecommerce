@@ -9,6 +9,8 @@ import errorHandler from './middlewares/handle.js';
 import morgan from 'morgan';
 import logger from './utils/logger.js';
 import { limiter } from './middlewares/ratelimit.js';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './docs/swagger.js';
 
 const app = express();
 
@@ -20,6 +22,7 @@ app.use(morgan('dev', {
 
 app.use(express.json());
 app.use(limiter);
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/', authRoutes);
 app.use('/', loginRoutes);
